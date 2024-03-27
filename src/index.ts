@@ -1,5 +1,5 @@
-import Auth from './structures/Auth'
-import Client from './structures/Client'
+import SpotifyAuth from './structures/spotify/Auth'
+import SpotifyClient from './structures/spotify/Client'
 import { config } from 'dotenv'
 import { Logger } from 'tslog'
 
@@ -19,7 +19,7 @@ const main = async () => {
     process.exit(1)
   }
 
-  const auth = new Auth(logger, {
+  const auth = new SpotifyAuth(logger, {
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     scopes: [
@@ -33,7 +33,7 @@ const main = async () => {
 
   const res = await auth.getTokenResponse()
 
-  const client = new Client(logger, res.access_token)
+  const client = new SpotifyClient(logger, res.access_token)
 
   const tracks = await client.getLibraryTracks()
 

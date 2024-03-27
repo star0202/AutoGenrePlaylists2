@@ -1,10 +1,10 @@
-import { TokenResponse } from '../types/spotify/Auth'
-import Request from './Request'
+import { TokenResponse } from '../../types/spotify/Auth'
+import Request from '../Request'
 import express from 'express'
 import open from 'open'
 import type { Logger } from 'tslog'
 
-export default class Auth extends Request {
+export default class SpotifyAuth extends Request {
   private readonly clientId: string
   private readonly clientSecret: string
   private readonly redirectUri: string

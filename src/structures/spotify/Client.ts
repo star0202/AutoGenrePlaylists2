@@ -1,8 +1,8 @@
-import type { SavedTracks, Track } from '../types/spotify/Track'
-import Request from './Request'
+import type { SavedTracks, Track } from '../../types/spotify/Track'
+import Request from '../Request'
 import type { Logger } from 'tslog'
 
-export default class Client extends Request {
+export default class SpotifyClient extends Request {
   constructor(logger: Logger<unknown>, token: string) {
     super(logger, {
       baseURL: 'https://api.spotify.com/v1',
