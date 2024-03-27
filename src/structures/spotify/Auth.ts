@@ -34,7 +34,7 @@ export default class SpotifyAuth extends Request {
     this.redirectUri = 'http://localhost:8888/callback'
   }
 
-  private async openAuthorizeUrl() {
+  private async authorize() {
     const app = express()
     const logger = this.logger.getSubLogger({ name: 'Server' })
 
@@ -64,7 +64,7 @@ export default class SpotifyAuth extends Request {
   }
 
   async getTokenResponse() {
-    if (!this.code) await this.openAuthorizeUrl()
+    if (!this.code) await this.authorize()
 
     return this.post<TokenResponse>('/api/token', {
       client_id: this.clientId,
