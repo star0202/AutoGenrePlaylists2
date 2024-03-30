@@ -12,10 +12,11 @@ export default class Request {
 
     this.rest.interceptors.request.use((config) => {
       const headers = { ...config.headers }
+      const data = config.params || config.data || null
 
       this.logger.debug(
         `${config.method?.toUpperCase()} ${config.url}` +
-          (config.params ? `?${new URLSearchParams(config.params)}` : ''),
+          (data ? `?${new URLSearchParams(data)}` : ''),
         headers,
       )
 
