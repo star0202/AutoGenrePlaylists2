@@ -25,16 +25,26 @@ export default class Request {
 
     this.rest.interceptors.response.use(
       (response) => {
-        this.logger.debug(`${response.status} ${response.statusText}`)
+        this.logger.debug(
+          `${response.request.method?.toUpperCase()} ${response.config.url}`,
+          {
+            status: response.status,
+            statusText: response.statusText,
+          },
+        )
 
         return response
       },
       (error) => {
         if (axios.isAxiosError(error))
-          this.logger.error(error.code, {
-            message: error.message,
-            response: error.response?.data,
-          })
+          this.logger.error(
+            `${error.request.method?.toUpperCase()} ${error.config?.url}`,
+            {
+              code: error.code,
+              message: error.message,
+              response: error.response?.data,
+            },
+          )
         else this.logger.error(error.stack)
       },
     )
@@ -54,6 +64,12 @@ export default class Request {
     data?: Record<string, unknown>,
   ) {
     const res = await this.rest.post<T>(url, data)
+
+    return res.data
+  }
+
+  protected async delete<T = unknown>(url: string) {
+    const res = await this.rest.delete<T>(url)
 
     return res.data
   }

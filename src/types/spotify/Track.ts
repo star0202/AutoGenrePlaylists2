@@ -13,4 +13,5 @@ export type Track = {
   name: string
   album: Album
   artists: PartialArtist[]
+  uri: string
 }
