@@ -1,10 +1,10 @@
 import { TokenResponse } from '../../types/spotify/Auth'
-import Request from '../Request'
+import CachedRequest from '../Cache'
 import express from 'express'
 import open from 'open'
 import type { Logger } from 'tslog'
 
-export default class SpotifyAuth extends Request {
+export default class SpotifyAuth extends CachedRequest {
   private readonly clientId: string
   private readonly clientSecret: string
   private readonly redirectUri: string
@@ -14,14 +14,15 @@ export default class SpotifyAuth extends Request {
 
   constructor(
     logger: Logger<unknown>,
+    cachePath: string,
     config: {
       clientId: string
       clientSecret: string
       scopes: string[]
     },
   ) {
-    super(logger, {
-      baseURL: 'https://accounts.spotify.com',
+    super(logger, cachePath, {
+      baseURL: 'https://accounts.spotify.com/api',
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -66,11 +67,11 @@ export default class SpotifyAuth extends Request {
   async getTokenResponse() {
     if (!this.code) await this.authorize()
 
-    return this.post<TokenResponse>('/api/token', {
+    return this.post<TokenResponse>('/token', {
       client_id: this.clientId,
       client_secret: this.clientSecret,
       redirect_uri: this.redirectUri,
-      code: this.code,
+      code: this.code!,
       grant_type: 'authorization_code',
     })
   }

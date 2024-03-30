@@ -24,11 +24,7 @@ export default class Request {
 
     this.rest.interceptors.response.use(
       (response) => {
-        this.logger.debug(
-          `${response.status} ${response.statusText}`,
-
-          response.data,
-        )
+        this.logger.debug(`${response.status} ${response.statusText}`)
 
         return response
       },

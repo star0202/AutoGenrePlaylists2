@@ -1,6 +1,8 @@
 import SpotifyAuth from './structures/spotify/Auth'
 import SpotifyClient from './structures/spotify/Client'
+import type { Track } from './types/spotify/Track'
 import { config } from 'dotenv'
+import { writeFile } from 'fs/promises'
 import { Logger } from 'tslog'
 
 config()
@@ -19,7 +21,7 @@ const main = async () => {
     process.exit(1)
   }
 
-  const auth = new SpotifyAuth(logger, {
+  const auth = new SpotifyAuth(logger, 'caches', {
     clientId: process.env.SPOTIFY_CLIENT_ID,
     clientSecret: process.env.SPOTIFY_CLIENT_SECRET,
     scopes: [
@@ -33,11 +35,38 @@ const main = async () => {
 
   const res = await auth.getTokenResponse()
 
-  const client = new SpotifyClient(logger, res.access_token)
+  const client = new SpotifyClient(logger, 'caches', res.access_token)
 
   const tracks = await client.getLibraryTracks()
 
-  logger.info(tracks)
+  const tracksByGenre = tracks.reduce(
+    (acc, track) => {
+      track.artists.forEach((artist) => {
+        if (!artist.genres) return acc['Unknown'].push(track)
+
+        artist.genres.forEach((genre) => {
+          if (!acc[genre]) acc[genre] = []
+
+          acc[genre].push(track)
+        })
+      })
+
+      return acc
+    },
+    { Unknown: [] } as Record<string, Track[]>,
+  )
+
+  const data = Object.entries(tracksByGenre)
+    .sort((a, b) => b[1].length - a[1].length)
+    .map(([genre, tracks]) => ({
+      genre,
+      tracks,
+    }))
+    .filter((genre) => genre.tracks.length >= 100)
+
+  await writeFile('data.json', JSON.stringify(data, null, 2))
+
+  logger.info(data.length)
 }
 
 main()
