@@ -105,7 +105,6 @@ const filterTracksByGenre = (
       genre,
       tracks,
     }))
-    .filter((genre) => genre.tracks.length >= THRESHOLD)
 
   data.forEach((d) => {
     const idSet = new Set<string>()
@@ -119,7 +118,7 @@ const filterTracksByGenre = (
     })
   })
 
-  return data
+  return data.filter((genre) => genre.tracks.length >= THRESHOLD)
 }
 
 const unfollowGenrePlaylists = async (client: SpotifyClient) => {
