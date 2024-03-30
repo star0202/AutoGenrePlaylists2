@@ -57,7 +57,7 @@ export default class CachedRequest extends Request {
   ) {
     super(logger, defaults)
 
-    this.cache = new CacheManager(logger, cachePath)
+    this.cache = new CacheManager(this.logger, cachePath)
   }
 
   private async cachedRequest<T>(
