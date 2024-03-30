@@ -99,12 +99,10 @@ const filterTracksByGenre = (
     { Unknown: [] } as Record<string, Track[]>,
   )
 
-  const data = Object.entries(tracksByGenre)
-    .sort((a, b) => b[1].length - a[1].length)
-    .map(([genre, tracks]) => ({
-      genre,
-      tracks,
-    }))
+  const data = Object.entries(tracksByGenre).map(([genre, tracks]) => ({
+    genre,
+    tracks,
+  }))
 
   data.forEach((d) => {
     const idSet = new Set<string>()
